@@ -322,9 +322,7 @@
                 jenisKelamin: jenisKelaminSelect.value
             };
 
-            // Panggil fungsi untuk mengirim data ke Google Sheet
-            sendUserDataToSheet(userData); // <--- BARIS INI AKAN MENGIRIM DATA
-
+            // sendUserDataToSheet(userData); // BARIS INI DIHAPUS DARI SINI
 
             shuffledQuestions = shuffleArray([...questions]);
             currentQuestionIndex = 0;
@@ -422,6 +420,14 @@
             scoreText.innerText = `${score} / ${shuffledQuestions.length}`;
             const percentage = Math.round((score / shuffledQuestions.length) * 100);
             percentageText.innerText = `Skor Anda: ${percentage}%`;
+
+            // Update userData with score details before sending
+            userData.score = score;
+            userData.totalQuestions = shuffledQuestions.length;
+            userData.percentageScore = percentage;
+
+            // Panggil fungsi untuk mengirim data ke Google Sheet SETELAH kuis selesai
+            sendUserDataToSheet(userData); // <--- BARIS INI AKAN MENGIRIM DATA
         }
 
         // Event listener untuk tombol "Lanjutkan" pada formulir
