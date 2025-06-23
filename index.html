@@ -6,8 +6,8 @@
     <title>Latihan Soal Analogi</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Chosen Palette: Calm Harmony (Stone/Slate Neutrals with Emerald/Red Accents) -->
-    <!-- Application Structure Plan: A single-page application designed as an interactive quiz. The user flows from a start screen, through each of the 50 questions one-by-one, and ends on a results screen. This sequential, single-question flow with immediate feedback (showing the correct answer and explanation after each choice) is chosen for optimal learning and engagement, preventing overwhelm and reinforcing the logic behind each analogy. The user can restart the quiz from the results screen. -->
-    <!-- Visualization & Content Choices: The primary content (50 analogy questions) is presented in an interactive quiz format. Goal: Test and Teach. Method: Multiple-choice questions (HTML buttons) with immediate state changes on-click (JS). Interaction: User selection triggers visual feedback (correct/incorrect styling) and reveals the correct answer's explanation. Justification: This active learning method is more effective than a static list for knowledge retention. Score is presented as text on a results card. Goal: Summarize Performance. Method: Simple text `Jumlah Benar: X / 50`. Justification: Clear, direct, and sufficient for the application's purpose. No complex charts needed. Library/Method: Vanilla JavaScript for all logic and state management. -->
+    <!-- Application Structure Plan: A single-page application designed as an interactive quiz. The user flows from an initial personal information screen, through each of the 50 questions one-by-one, and ends on a results screen. This sequential, single-question flow with immediate feedback and explanation is chosen for optimal learning and engagement. User data and quiz results are sent to a Google Sheet via Apps Script after quiz completion. The user can restart the quiz from the personal info form, or access another quiz via a new button. -->
+    <!-- Visualization & Content Choices: The application uses standard HTML form elements for data input and buttons for quiz options. Questions are displayed as text. Quiz progress is shown via a text counter and a dynamic progress bar. Quiz results (score and percentage) are displayed as simple text. All interactions are handled with Vanilla JavaScript. No complex charts or SVG graphics are used, ensuring broad compatibility and focus on core functionality. -->
     <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
     <style>
         body {
@@ -131,7 +131,9 @@
                 <p id="score-text" class="text-5xl font-bold text-slate-800 my-2">0 / 50</p>
                 <p id="percentage-text" class="text-xl font-semibold text-emerald-600"></p>
             </div>
-            <button id="restart-btn" class="w-full bg-slate-700 text-white font-bold py-3 px-6 rounded-lg hover:bg-slate-800 transition duration-300 shadow-md">Coba Lagi</button>
+            <p class="text-slate-600 mb-4">ingin quiz lain?</p>
+            <button id="mau-lagi-btn" class="w-full bg-slate-700 text-white font-bold py-3 px-6 rounded-lg hover:bg-slate-800 transition duration-300 shadow-md">MAU LAGI</button>
+            <button id="restart-quiz-btn" class="w-full mt-4 bg-slate-500 text-white font-bold py-3 px-6 rounded-lg hover:bg-slate-600 transition duration-300 shadow-md">Coba Lagi Kuis Ini</button>
         </div>
 
     </div>
@@ -145,7 +147,7 @@
             { question: "BENSIN : MOBIL = ANGIN : ...", options: ["Udara", "Roda", "Kincir", "Kapal Layar"], answer: 3, explanation: "Bensin adalah sumber tenaga Mobil, Angin adalah sumber tenaga Kapal Layar." },
             { question: "KULIT : SAPI = GADING : ...", options: ["Badak", "Gajah", "Harimau", "Ular"], answer: 1, explanation: "Kulit berasal dari Sapi, Gading berasal dari Gajah." },
             { question: "BELAJAR : PANDAI = MENABUNG : ...", options: ["Uang", "Bank", "Hemat", "Kaya"], answer: 3, explanation: "Belajar agar menjadi Pandai, Menabung agar menjadi Kaya." },
-            { question: "UMUR : TAHUN = BERAT : ...", options: ["Timbangan", "Badan", "Kilogram", "Gemuk"], answer: 2, explanation: "Umur diukur dalam satuan Tahun, Berat diukur dalam satuan Kilogram." },
+            { question: "UMUR : TAHun = BERAT : ...", options: ["Timbangan", "Badan", "Kilogram", "Gemuk"], answer: 2, explanation: "Umur diukur dalam satuan Tahun, Berat diukur dalam satuan Kilogram." },
             { question: "PANAS : Mendidih = DINGIN : ...", options: ["Sejuk", "Beku", "Es", "Segar"], answer: 1, explanation: "Tingkatan lebih tinggi dari Panas adalah Mendidih, tingkatan lebih tinggi dari Dingin adalah Beku." },
             { question: "DIREKTUR : PERUSAHAAN = REKTOR : ...", options: ["Fakultas", "Universitas", "Sekolah", "Kelas"], answer: 1, explanation: "Direktur memimpin Perusahaan, Rektor memimpin Universitas." },
             { question: "PETA : LOKASI = KAMUS : ...", options: ["Huruf", "Buku", "Bahasa", "Arti Kata"], answer: 3, explanation: "Peta menunjukkan Lokasi, Kamus menunjukkan Arti Kata." },
@@ -201,7 +203,9 @@
         const infoForm = document.getElementById('info-form');
         const continueBtn = document.getElementById('continue-btn');
         const nextBtn = document.getElementById('next-btn');
-        const restartBtn = document.getElementById('restart-btn');
+        // const restartBtn = document.getElementById('restart-btn'); // Old restart button
+        const mauLagiBtn = document.getElementById('mau-lagi-btn'); // New "MAU LAGI" button
+        const restartQuizBtn = document.getElementById('restart-quiz-btn'); // New "Coba Lagi Kuis Ini" button
 
         const namaInput = document.getElementById('nama');
         const nomorHpInput = document.getElementById('nomor-hp');
@@ -436,8 +440,13 @@
             startQuiz();
         });
         
-        // Event listener untuk tombol "Coba Lagi" akan mengembalikan ke layar informasi pribadi
-        restartBtn.addEventListener('click', function() {
+        // Event listener untuk tombol "MAU LAGI"
+        mauLagiBtn.addEventListener('click', function() {
+            window.location.href = 'https://lynk.id/galangparagon'; // Arahkan ke URL baru
+        });
+
+        // Event listener untuk tombol "Coba Lagi Kuis Ini" (sebelumnya restartBtn)
+        restartQuizBtn.addEventListener('click', function() {
             resultsScreen.classList.add('hidden');
             personalInfoScreen.classList.remove('hidden');
             // Opsional: Hapus data formulir setelah restart atau biarkan terisi
