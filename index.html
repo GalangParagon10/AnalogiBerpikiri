@@ -203,9 +203,8 @@
         const infoForm = document.getElementById('info-form');
         const continueBtn = document.getElementById('continue-btn');
         const nextBtn = document.getElementById('next-btn');
-        // const restartBtn = document.getElementById('restart-btn'); // Old restart button
-        const mauLagiBtn = document.getElementById('mau-lagi-btn'); // New "MAU LAGI" button
-        const restartQuizBtn = document.getElementById('restart-quiz-btn'); // New "Coba Lagi Kuis Ini" button
+        const mauLagiBtn = document.getElementById('mau-lagi-btn'); 
+        const restartQuizBtn = document.getElementById('restart-quiz-btn'); 
 
         const namaInput = document.getElementById('nama');
         const nomorHpInput = document.getElementById('nomor-hp');
@@ -238,7 +237,7 @@
         let userData = {}; // To store user data
 
         // START: Konfigurasi Google Apps Script
-        const GOOGLE_APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyqs6KfgunYiE5kbdWj1dOPi3y30n8anG5W5J8YeYeHXDejCJL9po0kWk1a6AIxN5yAjQ/exec'; // URL APPS SCRIPT ANDA DI SINI
+        const GOOGLE_APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw8cycoqi5o1v1A-13ZmCidQTXzRc6uGs24t0S0ODGfQKCQ9Yy1WWUjoaVUJTcJ9y4I9g/exec'; // URL APPS SCRIPT ANDA DI SINI
         // END: Konfigurasi Google Apps Script
 
         // Fungsi untuk mengirim data ke Google Sheet melalui Apps Script
@@ -246,20 +245,16 @@
             try {
                 const response = await fetch(GOOGLE_APPS_SCRIPT_URL, {
                     method: 'POST',
-                    mode: 'no-cors', // Penting untuk Apps Script sebagai endpoint sederhana
+                    mode: 'no-cors', 
                     headers: {
-                        'Content-Type': 'text/plain;charset=utf-8', // Menggunakan text/plain agar Apps Script dapat membaca e.postData.contents secara langsung.
+                        'Content-Type': 'text/plain;charset=utf-8', 
                     },
-                    body: JSON.stringify(data) // Mengirim objek data sebagai string JSON
+                    body: JSON.stringify(data)
                 });
-
-                // Karena mode: 'no-cors', response.ok akan selalu true, dan kita tidak bisa membaca response body.
-                // Anda perlu memeriksa di Google Sheet apakah data berhasil masuk.
                 console.log('Data sedang dikirim ke Google Sheet. Periksa Google Sheet Anda.');
 
             } catch (error) {
                 console.error('Ada masalah saat mengirim data ke Google Sheet:', error);
-                // Anda bisa menambahkan pesan error ke UI jika pengiriman gagal
             }
         }
 
@@ -275,7 +270,6 @@
         function validateForm() {
             let isValid = true;
 
-            // Clear previous errors
             namaError.classList.add('hidden');
             nomorHpError.classList.add('hidden');
             emailError.classList.add('hidden');
@@ -313,10 +307,9 @@
 
         function startQuiz() {
             if (!validateForm()) {
-                return; // Stop if form is not valid
+                return;
             }
 
-            // Store user data
             userData = {
                 nama: namaInput.value.trim(),
                 nomorHp: nomorHpInput.value.trim(),
@@ -325,8 +318,6 @@
                 umur: parseInt(umurInput.value),
                 jenisKelamin: jenisKelaminSelect.value
             };
-
-            // sendUserDataToSheet(userData); // BARIS INI DIHAPUS DARI SINI
 
             shuffledQuestions = shuffleArray([...questions]);
             currentQuestionIndex = 0;
@@ -425,33 +416,26 @@
             const percentage = Math.round((score / shuffledQuestions.length) * 100);
             percentageText.innerText = `Skor Anda: ${percentage}%`;
 
-            // Update userData with score details before sending
             userData.score = score;
             userData.totalQuestions = shuffledQuestions.length;
             userData.percentageScore = percentage;
 
-            // Panggil fungsi untuk mengirim data ke Google Sheet SETELAH kuis selesai
-            sendUserDataToSheet(userData); // <--- BARIS INI AKAN MENGIRIM DATA
+            sendUserDataToSheet(userData);
         }
 
-        // Event listener untuk tombol "Lanjutkan" pada formulir
         infoForm.addEventListener('submit', function(event) {
-            event.preventDefault(); // Mencegah form dari submit default
+            event.preventDefault(); 
             startQuiz();
         });
         
-        // Event listener untuk tombol "MAU LAGI"
         mauLagiBtn.addEventListener('click', function() {
-            window.location.href = 'https://lynk.id/galangparagon'; // Arahkan ke URL baru
+            window.location.href = 'https://lynk.id/galangparagon'; 
         });
 
-        // Event listener untuk tombol "Coba Lagi Kuis Ini" (sebelumnya restartBtn)
         restartQuizBtn.addEventListener('click', function() {
             resultsScreen.classList.add('hidden');
             personalInfoScreen.classList.remove('hidden');
-            // Opsional: Hapus data formulir setelah restart atau biarkan terisi
             infoForm.reset(); 
-            // Sembunyikan pesan error jika ada
             namaError.classList.add('hidden');
             nomorHpError.classList.add('hidden');
             emailError.classList.add('hidden');
